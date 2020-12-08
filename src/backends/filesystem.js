@@ -78,7 +78,7 @@ module.exports = class FileSystemBackend extends Backend {
         let tempPath = this.tempPath(tempID);
         let dataPath = this.dataPath(sha512);
 
-        let result = {};
+        let result = {sha512};
 
         // data ja existe com esse hash?
         try {
