@@ -118,7 +118,17 @@ module.exports = class FileSystemBackend extends Backend {
 
     async retriveData(virtualFilePath, writeStream) {
         let meta = await this.retriveMeta(virtualFilePath);
-        let dataPath = this.dataPath(meta[meta.length - 1].sha512);
+
+        if ( meta.length === 0 ) {
+            return new Promise((accept, reject) => {
+                accept({found: false});
+            });
+        }
+
+        let lastFile = meta[meta.length - 1];
+        lastFile.found = true;
+
+        let dataPath = this.dataPath(lastFile.sha512);
 
         let file = Fs.createReadStream(dataPath);
         file.pipe(writeStream);
@@ -126,7 +136,7 @@ module.exports = class FileSystemBackend extends Backend {
         return new Promise((accept, reject) => {
             file.on("end", (e) => {
                 file.close();
-                accept(e);
+                accept(lastFile);
             });
 
             file.on("error", (e) => {
