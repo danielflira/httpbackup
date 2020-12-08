@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc ava tests/index.js"
+    "test": "nyc ava tests/index.js",
+    "server": "node src/index.js"
   },
   "keywords": [],
   "author": "",

@@ -43,4 +43,4 @@ app.get("/meta/*", async (req, res) => {
     res.json(info);
 });
 
-app.listen(3000, () => {console.log("iniciado")});
+app.listen(3000, () => {console.log("listen on :3000")});
