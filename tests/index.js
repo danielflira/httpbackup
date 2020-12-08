@@ -265,3 +265,29 @@ test("retrive data of FileSystemBackend", async (t) => {
 
     t.pass();
 });
+
+
+test("retrive data tha does not exists of FileSystemBackend", async (t) => {
+    let backend = new FileSystemBackend();
+    let filePath = "/caminho/do/arquivo5";
+
+    const validateStream = new Stream.Writable({
+        write(chunk, encoding, callback) {
+            if ( ! this.data ) {
+                this.data = "" + chunk;
+            } else {
+                self.data += chunk;
+            }
+
+            callback();
+        }
+    });
+
+    let result = await backend.retriveData(filePath, validateStream);
+
+    if ( result.found !== false ) {
+        t.fail("file that does not exists was found?");
+    }
+    
+    t.pass();
+});
