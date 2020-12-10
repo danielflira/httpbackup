@@ -98,17 +98,26 @@ module.exports = class FileSystemBackend extends Backend {
 
         // independente se arquivo existe ou não, atualiza o metadado
         let meta = await this.retriveMeta(virtualFilePath);
+
+        // add space to files
+        if ( ! meta.data ) {
+            meta.data = [];
+        }
+
+        // separate data for easy access
+        let {data} = meta;
+
         result.updateMeta = false;
         
         // first time that file is received
-        if ( meta.length === 0 ) {
-            meta.push({md5, sha512});
+        if ( data.length === 0 ) {
+            data.push({md5, sha512});
             await this.storeMeta(virtualFilePath, meta);
             result.updateMeta = true;
         
         // hash of file changed since last update
-        } else if ( meta[meta.length-1].sha512 !== sha512 && meta[meta.length-1].md5 !== md5 ) {
-            meta.push({md5, sha512});
+        } else if ( data[data.length-1].sha512 !== sha512 && data[data.length-1].md5 !== md5 ) {
+            data.push({md5, sha512});
             await this.storeMeta(virtualFilePath, meta);
             result.updateMeta = true;
         }
@@ -119,13 +128,13 @@ module.exports = class FileSystemBackend extends Backend {
     async retriveData(virtualFilePath, writeStream) {
         let meta = await this.retriveMeta(virtualFilePath);
 
-        if ( meta.length === 0 ) {
+        if ( ! meta.data ) {
             return new Promise((accept, reject) => {
                 accept({found: false});
             });
         }
 
-        let lastFile = meta[meta.length - 1];
+        let lastFile = meta.data[meta.data.length - 1];
         lastFile.found = true;
 
         let dataPath = this.dataPath(lastFile.sha512);
@@ -162,7 +171,7 @@ module.exports = class FileSystemBackend extends Backend {
             let content = await Fs.promises.readFile(filePath);
             return JSON.parse(content);
         } catch(e) {
-            return [];
+            return {};
         }
     }
 }

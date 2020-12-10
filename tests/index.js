@@ -169,9 +169,9 @@ test("retrive meta of FileSystemBackend", async (t) => {
         await Fs.promises.unlink(backend.metaPath(filePath));
     } catch(e) {}
 
-    if ( (await backend.retriveMeta(filePath)).length !== 0 ) {
+    if ( Object.keys((await backend.retriveMeta(filePath))).length !== 0 ) {
         // aparentemente um meta dado inexistente retornou resultado
-        t.fail('await backend.retriveMeta(filePath)).length !== 0');
+        t.fail('Object.keys((await backend.retriveMeta(filePath))).length !== 0');
     }
 
     await backend.storeMeta(filePath, {campo1: "valor1"});
