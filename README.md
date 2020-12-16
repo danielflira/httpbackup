@@ -10,6 +10,13 @@ Running:
 $ npm run
 ```
 
+Running tests:
+-------
+
+```bash
+$ rm -rf store && npm run test
+```
+
 Backup
 ------
 
@@ -36,6 +43,7 @@ $ curl -sX GET http://localhost:3000/meta/path/of/file2 | python3 -m json.tool
 
 Backup all files
 ----------------
+
 ```bash
 $ find ~/Downloads -type f | xargs -I {} curl -X POST http://localhost:3000/store/supermachine/{} --data-binary @{}
 ```
