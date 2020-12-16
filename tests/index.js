@@ -294,3 +294,16 @@ test("retrive data tha does not exists of FileSystemBackend", async (t) => {
     
     t.pass();
 });
+
+test("fail to store an empty file", async (t) => {
+    let backend = new FileSystemBackend();
+    let filePath = "/caminho/do/arquivo4";
+
+    let result = await backend.storeData(filePath, Stream.Readable.from([]));
+
+    if ( ! result.error ) {
+        t.fail("It was possible to store empty file!");
+    }
+    
+    t.pass();
+});
