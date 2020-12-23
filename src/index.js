@@ -18,8 +18,6 @@ app.post("/store/*", async (req, res) => {
     }
 
     res.json(result);
-
-    res.end("\n");
 });
 
 // entry point de leitura
