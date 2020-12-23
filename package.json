@@ -16,5 +16,8 @@
   "devDependencies": {
     "ava": "^3.13.0",
     "nyc": "^15.1.0"
+  },
+  "bin": {
+    "httpbackup-srv": "./src/index.js"
   }
 }

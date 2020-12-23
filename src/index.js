@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const Express = require("express");
 const Backend = require("./backends/filesystem");
 
