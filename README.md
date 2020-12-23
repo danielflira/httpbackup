@@ -11,10 +11,17 @@ $ npm run
 ```
 
 Running tests:
--------
+--------------
 
 ```bash
 $ rm -rf store && npm run test
+```
+
+Build docker image:
+-------------------
+
+```bash
+$ npm run docker-image
 ```
 
 Backup
