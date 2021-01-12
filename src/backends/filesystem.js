@@ -197,4 +197,19 @@ module.exports = class FileSystemBackend extends Backend {
             return {};
         }
     }
+
+    async existsHash(fileHash) {
+        fileHash = fileHash.replace(/\//g, "");
+        fileHash = this.dataPath(fileHash);
+        let fp = null;
+
+        try {
+            fp = await Fs.promises.open(fileHash, "r");
+            fp.close();
+        } catch(e) {
+            return false;
+        }
+
+        return true;
+    }
 }

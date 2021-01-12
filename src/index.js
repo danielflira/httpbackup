@@ -67,4 +67,20 @@ app.get("/meta/*", async (req, res) => {
     res.json(info);
 });
 
+// check if hash is already stored
+app.get("/hash/*", async (req, res) => {
+    let fileHash = req.path.replace("/hash", "");
+    let info = null;
+
+    try {
+        info = {exists: (await backend.existsHash(fileHash))};
+    } catch(e) {
+        console.trace(e);
+        res.status(500).json(e);
+        return;
+    }
+
+    res.json(info);
+});
+
 app.listen(3000, () => {console.log("listen on :3000")});
