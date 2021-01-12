@@ -9,7 +9,15 @@ let app = Express();
 // entry point de armazenamento
 app.post("/store/*", async (req, res) => {
     let filePath = req.path.replace("/store", "");
-    let result = await backend.storeData(filePath, req);
+    let result = null;
+
+    try {
+        result = await backend.storeData(filePath, req);
+    } catch(e) {
+        console.trace(e);
+        res.status(500).json(e);
+        return;
+    }
 
     if ( result.updateMeta ) {
         console.log(`${filePath} updated with hash ${result.sha512}`);
@@ -23,8 +31,15 @@ app.post("/store/*", async (req, res) => {
 // entry point de leitura
 app.get("/store/*", async (req, res) => {
     let filePath = req.path.replace("/store", "");
+    let result = null;
 
-    let result = await backend.retriveData(filePath, res);
+    try {
+        result = await backend.retriveData(filePath, res);
+    } catch(e) {
+        console.trace(e);
+        res.status(500).json(e);
+        return;
+    }
 
     if ( result.found === false ) {
         console.log(`${filePath} does not exists`);
@@ -39,7 +54,16 @@ app.get("/store/*", async (req, res) => {
 // entry point de leitura
 app.get("/meta/*", async (req, res) => {
     let filePath = req.path.replace("/meta", "");
-    let info = await backend.retriveMeta(filePath);
+    let info = null;
+
+    try {
+        info = await backend.retriveMeta(filePath);
+    } catch(e) {
+        console.trace(e);
+        res.status(500).json(e);
+        return;
+    }
+
     res.json(info);
 });
 

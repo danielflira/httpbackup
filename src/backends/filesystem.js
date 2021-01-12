@@ -35,7 +35,7 @@ module.exports = class FileSystemBackend extends Backend {
     }
 
     async makeDirs(dirPath) {
-        await Fs.promises.mkdir(dirPath, {recursive: true});
+        return await Fs.promises.mkdir(dirPath, {recursive: true});
     }
 
     async storeTemp(readStream) {
@@ -61,14 +61,23 @@ module.exports = class FileSystemBackend extends Backend {
             });
     
             readStream.on("error", (e) => {
+                console.log(e);
                 reject(e);
             });
         });
     }
 
+    async unlink(path) {
+        return await Fs.promises.unlink(path);
+    }
+
+    async rename(path1, path2) {
+        return await Fs.promises.rename(path1, path2);
+    }
+
     async removeTemp(tempID) {
         let tempPath = this.tempPath(tempID);
-        await Fs.promises.unlink(tempPath);
+        await this.unlink(tempPath);
     }
 
     async storeData(virtualFilePath, readStream) {
@@ -97,7 +106,7 @@ module.exports = class FileSystemBackend extends Backend {
         // data nao existe com esse hash?
         } catch (e) {
             await this.makeDirs(this.parsePath(dataPath).dirName);
-            await Fs.promises.rename(tempPath, dataPath);
+            await this.rename(tempPath, dataPath);
             
             result.newFile = true;
         }
@@ -161,20 +170,28 @@ module.exports = class FileSystemBackend extends Backend {
         });
     }
 
+    async writeFile(filePath, data) {
+        return await Fs.promises.writeFile(filePath, data);
+    }
+
     async storeMeta(virtualFilePath, meta) {
         virtualFilePath = this.metaPath(virtualFilePath);
 
         let {dirName} = this.parsePath(virtualFilePath);
 
         await this.makeDirs(dirName);
-        await Fs.promises.writeFile(virtualFilePath, JSON.stringify(meta));
+        await this.writeFile(virtualFilePath, JSON.stringify(meta));
+    }
+
+    async readFile(filePath) {
+        return await Fs.promises.readFile(filePath);
     }
 
     async retriveMeta(virtualFilePath) {
         let filePath = this.metaPath(virtualFilePath);
 
         try {
-            let content = await Fs.promises.readFile(filePath);
+            let content = await this.readFile(filePath);
             return JSON.parse(content);
         } catch(e) {
             return {};
